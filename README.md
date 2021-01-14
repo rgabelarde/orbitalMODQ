@@ -1,88 +1,112 @@
-# Project Title
+# NUS Module Review Website (MODQ)
 
-One Paragraph of project description goes here
+## Motivation 
 
-## Getting Started
+Imagine this: it is the period for Module Registration, and you are interested in taking a specific module. You are seeking advice from people who have taken the module, and your current alternatives are your current university friends, seniors and perhaps the forums like reddit or NUSWhispers.
+These days, many students are still hesitant to turn to such forums as they are unable to be anonymous or are afraid that people will judge them. We hope to be able to reduce this fear and have students be able to interact cross-faculty with this platform, to help garner module reviews. Picture a one-stop site for collated module reviews, with information about people’s experiences taking it, requirements and feedback on the teaching team.
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### Prerequisites
+## Aim 
+ 
+We hope to make it easier and more convenient for NUS students to interact and communicate with students from other faculties in terms of understanding their experience and perspective doing the module as well as assignment and workload reviews.
+The module review website allows students to post module reviews (possibly anonymously) and search for reviews easily. It will be a web-based forum where students can interact with students from other faculties via comments. Students can also vote for reviews that they find useful, allowing them to find helpful information more easily.
 
-What things you need to install the software and how to install them
 
-```
-Give examples
-```
+## How are we different from similar platforms? 
 
-### Installing
+### [NUSMods](https://nusmods.com/)
+Our platform will be more specific to module reviews (i.e. more on personal experiences), rather than information about the module itself from the NUS database. 
 
-A step by step series of examples that tell you how to get a development env running
+### [Quora](https://www.quora.com)
+Questions asked here can be too broad, not specific to NUS students, others will not understand what module codes you may be referring to. Curriculum of modules varies across universities.
 
-Say what the step will be
+### [LumiNUS](https://luminus.nus.edu.sg)
+Students can only use the forum for a specific module once they are enrolled in the module. They are not able to ask questions prior to being enrolled, hence the forum on LumiNUS is more homework/syllabus based, rather than the experience of taking the module.
 
-```
-Give the example
-```
 
-And repeat
+## Scope of Project
 
-```
-until finished
-```
+A Module Review Website where students can post their reviews of various modules and search for a list of reviews for a specific module easily. They can also vote for reviews they find useful.
+ 
+### Core features developed: 
+ 
+Module review website
+Login/Logout function
+Display all reviews
+Submit, edit and delete reviews as a logged in user
+Allow anonymous guest users to post review
+Search for reviews (by module code, name, keyword)
+Sort reviews by date, or number of votes
+ 
+Expansion of features for module review website where students can interact with students from other faculties in a chat-like interface about their experiences.
+ 
+### Edge features developed:
+ 
+Module review website
+Upvote and downvote reviews
+Comment on posted reviews 
+Login/Logout with Google 
 
-End with an example of getting some data out of the system or using it for a little demo
+## Documentation
 
-## Running the tests
+### Login/Logout function
+The login/logout function is based on sessions, and is made with express-session and Passport.js. When a user logs in, the user is authenticated using Passport.js’s local strategy. If both the username and password are correct, the user is saved in the backend while a cookie is sent to the frontend and saved to the user's browser. This cookie is then sent back to the backend on further HTTP requests.
 
-Explain how to run the automated tests for this system
+### Display all reviews
+When a user visits the homepage of our website, the frontend sends a HTTP get request to the backend, and the backend will get all module reviews from the database and send it back to the frontend, allowing reviews to be displayed.
 
-### Break down into end to end tests
+### Submit, edit and delete reviews as a logged in user
+When a logged in user submits, edits or deletes a post, a HTTP post, patch or delete request is sent to the backend respectively, together with a cookie. The cookie identifies the user, and is used to attach a user id to the post, or to allow users to only edit and delete their own posts. The post will then be added, updated, or deleted from the database.
 
-Explain what these tests test and why
+### Allow anonymous guest users to post review
+Users have the option to post their review anonymously, whether they are logged in or not. This allows the author of the post to not be displayed. If the user is not logged in, a HTTP post request will still be sent to the backend, and a new post will still be created, but without an author. Hence, the user will not be able to edit or delete his review afterwards.
 
-```
-Give an example
-```
+### Search for reviews (by module code, name, keyword)
+For module code, the list of posts is simply filtered by module code on the frontend and displayed on the page. A user can also search for reviews using keywords. This sends a HTTP get request to the backend, which will then use Mongoose's find() function to find the appropriate reviews and send them back to the frontend.
 
-### And coding style tests
+### Sort reviews by date, or number of votes
+Reviews are sorted on the frontend using JavaScript's sort() function and displayed on the page.
 
-Explain what these tests test and why
+### Upvote and downvote reviews
+The ID of the users who upvoted or downvoted a post are stored in an array, and the total number of votes is calculated using (length of upvote array - length of downvote array). Each user is allowed to upvote or downvote a post at most once.
 
-```
-Give an example
-```
+### Comment on posted reviews 
+Users who are logged in can post comments. This will send a HTTP post request to the backend, together with the ID of the post commented on. The comment will be stored in the database and retrieved when the post is viewed.
 
-## Deployment
+### Login/Logout with Google 
+This feature is implemented using passport-google-oauth20. A new user is created from the information obtained from Google such as name and email address, and stored in the users database together with the rest of the users. Users can fill in the remaining information (year of study, etc.) afterwards.
 
-Add additional notes about how to deploy this on a live system
+
+## Problems/Bugs Fixed
+
+When a session expires, the frontend will still display the logged-in version of the page.
+Solution: Send a HTTP get request to the backend every time a link is clicked to check if the user is logged in.
+Cannot style module reviews (with bold, italics, underline, links, etc.)
+Solution: Use an autocomplete search box instead.
+It takes a long time to find a module with a normal drop-down list.
+Solution: Use a What You See Is What You Get editor instead of a normal textarea element.
+User email is not verified when registering.
+Solution: Change type of input from "text" to "email", and check if email is valid in the backend.
+Search bar does not work for partial words.
+Solution: Modify search route to do a partial search on the first word entered.
+
+
+## Testing
+
+Snapshot testing was done using Jest so that changes in the rendered output can be spotted easily and fixed if necessary.
+Unit testing was done using mocha on a few of the backend routes to make sure they work as expected.
+
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [Nodejs](https://nodejs.org/en/) - back-end JavaScript runtime environment
+* [Express](https://expressjs.com) - Web application framework
+* [React.js](https://reactjs.org) - Frontend framework used
 
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Yong Shan Rong** - [ysr25](https://github.com/ysr25)
+* **Rachel Gina Abelarde** - [rgabelarde](https://github.com/rgabelarde)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
-
+Deployment: https://orbitalmodq.herokuapp.com/
